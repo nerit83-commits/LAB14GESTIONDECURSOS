@@ -5,15 +5,21 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-
-
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
 
 
 /*
@@ -43,6 +49,7 @@ para comprender cómo configurarlo cuando sea necesario.
 */
 
 
+@TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class AppTestOnlineCourse {
 
     private OnlineCourse onlineCourse;   //Objeto que se usará en cada prueba.
@@ -75,6 +82,7 @@ public class AppTestOnlineCourse {
     
     // TEST INDIVIDUAL QUE SE PUEDE PARAMETRIZAR
    
+    @Tag ("constructor")
     @ParameterizedTest
     @CsvSource({
             "Java Web, 12, Mario Pérez, Udemy",
@@ -103,8 +111,33 @@ public class AppTestOnlineCourse {
     }
     */
    
+    //@METHODSOURCE es proveedor de datos para múltiples parámetros con lógica personalizada.
+    static Stream<Arguments> onlineCourseProvider() { //Nombre del método proveedor.
+        return Stream.of(  //Proporciona múltiples conjuntos de argumentos para el test.
+            Arguments.of("Java Web", 12, "Mario Pérez", "Udemy"),
+            Arguments.of("Python Básico", 8, "Ana Gómez", "Coursera"),
+            Arguments.of("Testing QA", 10, "Luis Martínez", "edX")
+        );
+    }
+
+    @Order(2)
+    @Tag ("constructor")    
+    @ParameterizedTest
+    @MethodSource("onlineCourseProvider")  //Referencia al método proveedor de datos.
+    @DisplayName("Constructor OnlineCourse probado con múltiples parámetros (MethodSource)")
+    void testConstructorParameterized(String title, int duration, String professor, String platform) {  
+
+        OnlineCourse course = new OnlineCourse(title, duration, professor, platform); //Crea una nueva instancia con los parámetros proporcionados.
+
+        assertEquals(title, course.getTitle());
+        assertEquals(duration, course.getDuration());
+        assertEquals(professor, course.getProfessor());
+        assertEquals(platform, course.getPlataform());
+    }
+
 
     //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
+    @Order(3)
     @ParameterizedTest
     @EmptySource  //Proporciona un valor vacío para la prueba.
     @DisplayName("Cambiar plataforma a valor vacío")
@@ -113,6 +146,7 @@ public class AppTestOnlineCourse {
         assertEquals(plataforma, onlineCourse.getPlataform());  //Verifica que el cambio se aplicó correctamente.
     }
 
+    @Order(2)
     @ParameterizedTest
     @NullSource  //Proporciona un valor nulo para la prueba.
     @DisplayName("Cambiar plataforma a valor nulo")
@@ -121,6 +155,7 @@ public class AppTestOnlineCourse {
         assertEquals(plataforma, onlineCourse.getPlataform());  //Verifica que el cambio se aplicó correctamente.
     }
 
+    @Order(1)
     @ParameterizedTest
     @NullAndEmptySource  //Proporciona tanto un valor nulo como un valor vacío para la prueba.
     @DisplayName("Cambiar plataforma a valor nulo o vacío")
@@ -129,11 +164,10 @@ public class AppTestOnlineCourse {
         assertEquals(plataforma, onlineCourse.getPlataform());  //Verifica que el cambio se aplicó correctamente.
     }
 
-
-
-
     // TEST PARAMETRIZADO
    
+    @Tag ("setTitle")
+    @Order(4)
     @ParameterizedTest
     @CsvSource({
             "Plataforma1",

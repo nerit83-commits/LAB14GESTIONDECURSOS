@@ -6,12 +6,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
@@ -45,7 +51,7 @@ import org.junit.jupiter.params.provider.NullSource;
 para comprender cómo configurarlo cuando sea necesario.
 */
 
-
+@TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class AppTestCourse { 
  
     private Course course;
@@ -74,8 +80,11 @@ public class AppTestCourse {
         System.out.println("AfterEach → limpiando instancia");
         course = null;
     }
+    
 
     //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
+    @Tag ("setTitle")
+    @Order(1)
     @ParameterizedTest
     @EmptySource  //Provee solo valores vacíos al test.
     @DisplayName("Asignación de títulos vacíos")
@@ -84,6 +93,8 @@ public class AppTestCourse {
         assertEquals(title, course.getTitle());  //Verifica que el título se haya asignado correctamente.
     }
     
+    @Tag ("setTitle")
+    @Order(2)
     @ParameterizedTest
     @NullAndEmptySource  //Provee valores nulos y vacíos al test.
     @DisplayName("Asignación de títulos nulos o vacíos")
@@ -92,6 +103,8 @@ public class AppTestCourse {
         assertEquals(title, course.getTitle());  //Verifica que el título se haya asignado correctamente.
     }
 
+    @Tag ("setTitle")
+    @Order(3)
     @ParameterizedTest
     @NullSource  //Provee solo valores nulos al test.
     @DisplayName("Asignación de títulos nulos")
@@ -111,7 +124,30 @@ public class AppTestCourse {
     }
     */
 
+    //METHODSOURCE: prueba múltiples títulos y duraciones al mismo tiempo.
+    static Stream<Arguments> courseDataProvider() {  //Provee datos para el test parametrizado.
+        return Stream.of(  //Cada Arguments.of representa un conjunto de parámetros para el test.
+            Arguments.of("Java Básico", 10),
+            Arguments.of("Python Inicial", 15),
+            Arguments.of("Testing QA", 6)
+        );
+    }
+
+    @Tag ("constructor")
+    @ParameterizedTest
+    @MethodSource("courseDataProvider")  //Usa el método estático como fuente de datos.
+    @DisplayName("Validación del constructor con múltiples parámetros (MethodSource)")
+        void testConstructorWithMethodSource(String title, int duration) {
+        Course c = new Course(title, duration);
+        assertEquals(title, c.getTitle());  //Verifica que el título se haya asignado correctamente.
+        assertEquals(duration, c.getDuration());  //Verifica que la duración se haya asignado correctamente.
+    }
+
+
+
     //TEST PARAMETRIZADO
+    @Tag ("setTitle")
+    @Order(4)
     @ParameterizedTest
     @ValueSource(strings = {"Python", "Git", "Docker"})
     @DisplayName("Asignación de diferentes títulos de curso")

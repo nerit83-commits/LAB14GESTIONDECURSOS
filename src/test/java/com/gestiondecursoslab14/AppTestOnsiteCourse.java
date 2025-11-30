@@ -5,15 +5,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-
-
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
 
 
 /*
@@ -42,6 +47,7 @@ personalizada)
 para comprender cómo configurarlo cuando sea necesario.
 */
 
+@TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class AppTestOnsiteCourse {
 
     private OnsiteCourse onsiteCourse;
@@ -71,6 +77,9 @@ public class AppTestOnsiteCourse {
 
 
    // REFACTORIZACION DEL TEST INDIVIDUAL A PARAMETRIZADO
+
+    @Tag ("constructor")
+    @Order(2)
     @ParameterizedTest  //Constructor test usando múltiples parámetros.
     @CsvSource({  //Permite definir múltiples conjuntos de datos para el test.
             "Cocina Básica, 6, A-12, 20",
@@ -102,7 +111,33 @@ public class AppTestOnsiteCourse {
     }
     */
  
+    //TEST METHOD SOURCE permite múltiples parámetros con lógica personalizada.
+    static Stream<Arguments> onsiteCourseProvider() {  //Provee múltiples conjuntos de datos para el test.
+        return Stream.of(  //Cada conjunto de datos es un objeto Arguments.
+            Arguments.of("Java Web", 15, "Aula 101", 30),
+            Arguments.of("Python Avanzado", 20, "Laboratorio 3", 25),
+            Arguments.of("Testing QA", 10, "Sala B", 18)
+        );
+    }
+
+    @Tag ("constructor")
+    @Order(3)
+    @ParameterizedTest
+    @MethodSource("onsiteCourseProvider")  //Usa el método estático para obtener los datos.
+    @DisplayName("Constructor OnsiteCourse probado con múltiples parámetros (MethodSource)")
+    void testConstructorParameterized(String title, int duration, String room, int maxQuota) {
+
+        OnsiteCourse course = new OnsiteCourse(title, duration, room, maxQuota);  //Crea la instancia con los parámetros proporcionados.
+        assertEquals(title, course.getTitle());
+        assertEquals(duration, course.getDuration());
+        assertEquals(room, course.getClassroom());
+        assertEquals(maxQuota, course.getMaxQuota());
+    }
+
+
     //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
+
+    @Order(4)
     @ParameterizedTest
     @EmptySource  //Proporciona un valor vacío para la prueba.
     @DisplayName("Cambiar aula a valor vacío")
@@ -110,6 +145,7 @@ public class AppTestOnsiteCourse {
         onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor vacío.
         assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
     }
+    @Order(5)
     @ParameterizedTest
     @NullSource  //Proporciona un valor nulo para la prueba.
     @DisplayName("Cambiar aula a valor nulo")
@@ -117,6 +153,7 @@ public class AppTestOnsiteCourse {
         onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor nulo.
         assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
     }
+    @Order(6)
     @ParameterizedTest
     @NullAndEmptySource  //Proporciona tanto un valor nulo como un valor vacío para la prueba.
     @DisplayName("Cambiar aula a valor nulo o vacío")
@@ -126,13 +163,9 @@ public class AppTestOnsiteCourse {
     }
 
 
-
-
-
-
-
     // TEST PARAMETRIZADO
 
+    @Order(1)
     @ParameterizedTest
     @CsvSource({
             "10",
