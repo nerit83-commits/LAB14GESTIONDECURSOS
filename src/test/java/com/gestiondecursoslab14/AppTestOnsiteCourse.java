@@ -5,29 +5,48 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 /*
-*Test individual: crea OnsiteCourse y verifica título, duración, aula y cupo → OK
-*Test parametrizado: prueba cupos: 10, 0 y -5, Verifica comportamiento especial para cupos negativos (tu clase los pone en 0)
-*Ciclo de vida del test: BeforeAll (mensaje inicial), AfterAll (mensaje final), BeforeEach (crea una instancia nueva) y 
-*AfterEach (limpia la instancia)
+*Identificar 1 test y Reescribilor usando @ParameterizedTest con:
+*@MethodSource (idealmente uno que necesite múltiples parámetros o lógica 
+personalizada)
 */
 
+/*
+*Parte 2: Tests con valores nulos o vacíos
+*Modifica o Agregá al menos un test utilizando alguna de las siguientes anotaciones:
+*@EmptySource
+*@NullSource
+*@NullAndEmptySource
+*Si es necesario agregar logica algun metodo de los set para que les soporte un 
+*valor nulo, o que el test espere un error. 
+*/
 
+/* 
+*Parte 3: Orden de ejecución
+*Anotá una de las clases de test con @TestMethodOrder .
+*Elegí una de las siguientes estrategias:
+*OrderAnnotation.class (y usá @Order(n) ), MethodName.class, DisplayName.class
+*Asegurate de tener al menos 3 métodos con orden definido.
+*Aunque no es buena práctica depender del orden, este ejercicio es útil 
+para comprender cómo configurarlo cuando sea necesario.
+*/
 
 public class AppTestOnsiteCourse {
 
     private OnsiteCourse onsiteCourse;
 
-    // CICLO DE VIDA
-
+    // CICLO DE VIDA DEL TEST
     @BeforeAll  //Se ejecuta solo una vez antes de todos los test.
     static void beforeAll() {
         System.out.println("Iniciando OnsiteCourseTest...");
@@ -50,9 +69,27 @@ public class AppTestOnsiteCourse {
         onsiteCourse = null;  //Se limpira para liberar memoria.
     }
 
-    
-    // TEST INDIVIDUAL
 
+   // REFACTORIZACION DEL TEST INDIVIDUAL A PARAMETRIZADO
+    @ParameterizedTest  //Constructor test usando múltiples parámetros.
+    @CsvSource({  //Permite definir múltiples conjuntos de datos para el test.
+            "Cocina Básica, 6, A-12, 20",
+            "Fotografía, 4, B-5, 15",
+            "Programación, 10, C-3, 30"
+    })
+    @DisplayName("Constructor crea correctamente el OnsiteCourse")
+    void testOnsiteCourseConstructor(String title, int duration, String classroom, int maxQuota) {
+        OnsiteCourse course = new OnsiteCourse(title, duration, classroom, maxQuota);
+
+        assertNotNull(course);  //Verifica que la instancia no sea nula.
+        assertEquals(title, course.getTitle());
+        assertEquals(duration, course.getDuration());
+        assertEquals(classroom, course.getClassroom());
+        assertEquals(maxQuota, course.getMaxQuota());
+    }
+
+    /* 
+     // TEST INDIVIDUAL
     @Test
     @DisplayName("Constructor crea correctamente el OnsiteCourse")
     void testConstructor() {
@@ -63,9 +100,39 @@ public class AppTestOnsiteCourse {
         assertEquals("A-12", onsiteCourse.getClassroom());
         assertEquals(20, onsiteCourse.getMaxQuota());
     }
-
+    */
  
+    //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
+    @ParameterizedTest
+    @EmptySource  //Proporciona un valor vacío para la prueba.
+    @DisplayName("Cambiar aula a valor vacío")
+    void testSetClassroomEmpty(String classroom) {
+        onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor vacío.
+        assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
+    }
+    @ParameterizedTest
+    @NullSource  //Proporciona un valor nulo para la prueba.
+    @DisplayName("Cambiar aula a valor nulo")
+    void testSetClassroomNull(String classroom) {
+        onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor nulo.
+        assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
+    }
+    @ParameterizedTest
+    @NullAndEmptySource  //Proporciona tanto un valor nulo como un valor vacío para la prueba.
+    @DisplayName("Cambiar aula a valor nulo o vacío")
+    void testSetClassroomNullAndEmpty(String classroom) {
+        onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor nulo o vacío.
+        assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
+    }
+
+
+
+
+
+
+
     // TEST PARAMETRIZADO
+
     @ParameterizedTest
     @CsvSource({
             "10",
