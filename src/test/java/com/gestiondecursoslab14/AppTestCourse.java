@@ -37,7 +37,6 @@ public class AppTestCourse {
         System.out.println("Finalizando AppTest...");
     }
 
-
     @BeforeEach  //Se ejecuta antes de cada test y sirve para iniciar una instancia fresca.
     void setUp() {
         System.out.println("BeforeEach → creando instancia de Course");

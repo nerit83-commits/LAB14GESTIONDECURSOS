@@ -66,7 +66,6 @@ public class AppTestOnsiteCourse {
 
  
     // TEST PARAMETRIZADO
-
     @ParameterizedTest
     @CsvSource({
             "10",
