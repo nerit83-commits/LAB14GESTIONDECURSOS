@@ -48,8 +48,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
             <version>2.22.1</version>
               <configuration>
-                <groups>setTitle</groups>  <!-- incluir solo tests con @Tag("setTitle") -->
-                <excludedGroups>constructor</excludedGroups > <!-- excluir test con @Tag("constructor") -->
+                <!-- This is pluginManagement: versions/config can be overridden later in <plugins> -->
               </configuration>
         </plugin>
         <plugin>
@@ -75,5 +74,26 @@
         </plugin>
       </plugins>
     </pluginManagement>
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <!-- ensure JUnit5/Jupiter is used and use the default include patterns
+               (we'll also rename the test classes to '*Test' so they are detected)
+          -->
+          <useModulePath>false</useModulePath>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+            <include>**/*TestCase.java</include>
+            <include>**/Test*.java</include>
+          </includes>
+          <reportFormat>brief</reportFormat>
+          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

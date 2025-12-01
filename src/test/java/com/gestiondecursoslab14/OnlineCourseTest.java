@@ -8,52 +8,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-
+import org.junit.jupiter.api.Tag;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
 
-/*
-*Identificar 1 test y Reescribilor usando @ParameterizedTest con:
-*@MethodSource (idealmente uno que necesite múltiples parámetros o lógica 
-personalizada)
-*/
-
-/*
-*Parte 2: Tests con valores nulos o vacíos
-*Modifica o Agregá al menos un test utilizando alguna de las siguientes anotaciones:
-*@EmptySource
-*@NullSource
-*@NullAndEmptySource
-*Si es necesario agregar logica algun metodo de los set para que les soporte un 
-*valor nulo, o que el test espere un error. 
-*/
-
-/* 
-*Parte 3: Orden de ejecución
-*Anotá una de las clases de test con @TestMethodOrder .
-*Elegí una de las siguientes estrategias:
-*OrderAnnotation.class (y usá @Order(n) ), MethodName.class, DisplayName.class
-*Asegurate de tener al menos 3 métodos con orden definido.
-*Aunque no es buena práctica depender del orden, este ejercicio es útil 
-para comprender cómo configurarlo cuando sea necesario.
-*/
-
-
 @TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class AppTestOnlineCourse {
+public class OnlineCourseTest {
 
     private OnlineCourse onlineCourse;   //Objeto que se usará en cada prueba.
-
 
     // CICLO DE VIDA
    
@@ -79,9 +50,6 @@ public class AppTestOnlineCourse {
         onlineCourse = null;  //Con el null se libera la referencia para el próximo test.
     }
 
-    
-    // TEST INDIVIDUAL QUE SE PUEDE PARAMETRIZAR
-   
     @Tag ("constructor")
     @ParameterizedTest
     @CsvSource({
@@ -99,19 +67,6 @@ public class AppTestOnlineCourse {
         assertEquals(platform, course.getPlataform());
     }
 
-    /* 
-    @Test
-    @DisplayName("Verifica que OnlineCourse se crea correctamente")
-    void testConstructor() {
-        assertNotNull(onlineCourse);  //Verifica que la instancia exista.
-        assertEquals("Java Web", onlineCourse.getTitle());
-        assertEquals(12, onlineCourse.getDuration());
-        assertEquals("Mario Pérez", onlineCourse.getProfessor());
-        assertEquals("Udemy", onlineCourse.getPlataform());
-    }
-    */
-   
-    //@METHODSOURCE es proveedor de datos para múltiples parámetros con lógica personalizada.
     static Stream<Arguments> onlineCourseProvider() { //Nombre del método proveedor.
         return Stream.of(  //Proporciona múltiples conjuntos de argumentos para el test.
             Arguments.of("Java Web", 12, "Mario Pérez", "Udemy"),
@@ -135,8 +90,6 @@ public class AppTestOnlineCourse {
         assertEquals(platform, course.getPlataform());
     }
 
-
-    //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
     @Order(3)
     @ParameterizedTest
     @EmptySource  //Proporciona un valor vacío para la prueba.
@@ -164,8 +117,6 @@ public class AppTestOnlineCourse {
         assertEquals(plataforma, onlineCourse.getPlataform());  //Verifica que el cambio se aplicó correctamente.
     }
 
-    // TEST PARAMETRIZADO
-   
     @Tag ("setTitle")
     @Order(4)
     @ParameterizedTest

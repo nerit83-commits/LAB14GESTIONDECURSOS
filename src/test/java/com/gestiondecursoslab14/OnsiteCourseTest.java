@@ -21,34 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.stream.Stream;
 
 
-/*
-*Identificar 1 test y Reescribilor usando @ParameterizedTest con:
-*@MethodSource (idealmente uno que necesite múltiples parámetros o lógica 
-personalizada)
-*/
-
-/*
-*Parte 2: Tests con valores nulos o vacíos
-*Modifica o Agregá al menos un test utilizando alguna de las siguientes anotaciones:
-*@EmptySource
-*@NullSource
-*@NullAndEmptySource
-*Si es necesario agregar logica algun metodo de los set para que les soporte un 
-*valor nulo, o que el test espere un error. 
-*/
-
-/* 
-*Parte 3: Orden de ejecución
-*Anotá una de las clases de test con @TestMethodOrder .
-*Elegí una de las siguientes estrategias:
-*OrderAnnotation.class (y usá @Order(n) ), MethodName.class, DisplayName.class
-*Asegurate de tener al menos 3 métodos con orden definido.
-*Aunque no es buena práctica depender del orden, este ejercicio es útil 
-para comprender cómo configurarlo cuando sea necesario.
-*/
-
 @TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class AppTestOnsiteCourse {
+public class OnsiteCourseTest {
 
     private OnsiteCourse onsiteCourse;
 
@@ -75,9 +49,6 @@ public class AppTestOnsiteCourse {
         onsiteCourse = null;  //Se limpira para liberar memoria.
     }
 
-
-   // REFACTORIZACION DEL TEST INDIVIDUAL A PARAMETRIZADO
-
     @Tag ("constructor")
     @Order(2)
     @ParameterizedTest  //Constructor test usando múltiples parámetros.
@@ -97,21 +68,6 @@ public class AppTestOnsiteCourse {
         assertEquals(maxQuota, course.getMaxQuota());
     }
 
-    /* 
-     // TEST INDIVIDUAL
-    @Test
-    @DisplayName("Constructor crea correctamente el OnsiteCourse")
-    void testConstructor() {
-        assertNotNull(onsiteCourse);  //Verifica que la instancia no sea nula.
-
-        assertEquals("Cocina Básica", onsiteCourse.getTitle());
-        assertEquals(6, onsiteCourse.getDuration());
-        assertEquals("A-12", onsiteCourse.getClassroom());
-        assertEquals(20, onsiteCourse.getMaxQuota());
-    }
-    */
- 
-    //TEST METHOD SOURCE permite múltiples parámetros con lógica personalizada.
     static Stream<Arguments> onsiteCourseProvider() {  //Provee múltiples conjuntos de datos para el test.
         return Stream.of(  //Cada conjunto de datos es un objeto Arguments.
             Arguments.of("Java Web", 15, "Aula 101", 30),
@@ -133,9 +89,6 @@ public class AppTestOnsiteCourse {
         assertEquals(room, course.getClassroom());
         assertEquals(maxQuota, course.getMaxQuota());
     }
-
-
-    //TEST @EMPTYSOURCE, @NULLSOURCE o @NULLANDEMPTYSOURCE
 
     @Order(4)
     @ParameterizedTest
@@ -161,9 +114,6 @@ public class AppTestOnsiteCourse {
         onsiteCourse.setClassroom(classroom);  //Cambia el aula a un valor nulo o vacío.
         assertEquals(classroom, onsiteCourse.getClassroom());  //Verifica que el aula se haya actualizado correctamente.
     }
-
-
-    // TEST PARAMETRIZADO
 
     @Order(1)
     @ParameterizedTest

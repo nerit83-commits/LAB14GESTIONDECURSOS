@@ -1,6 +1,5 @@
 package com.gestiondecursoslab14;
 
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,37 +21,8 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 
-
-/*
-*CourseTest.java
-*Testea constructor, getters, showInformation
-*1 test parametrizado 
-*1 test normal (test individual)
-*1 uso completo del ciclo de vida de JUnit (BeforeAll, AfterAll, BeforEach y AfterEach)
-*/
-
-/*
-*Parte 2: Tests con valores nulos o vacíos
-*Modifica o Agregá al menos un test utilizando alguna de las siguientes anotaciones:
-*@EmptySource
-*@NullSource
-*@NullAndEmptySource
-*Si es necesario agregar logica algun metodo de los set para que les soporte un 
-*valor nulo, o que el test espere un error. 
-*/
-
-/* 
-*Parte 3: Orden de ejecución
-*Anotá una de las clases de test con @TestMethodOrder .
-*Elegí una de las siguientes estrategias:
-*OrderAnnotation.class (y usá @Order(n) ), MethodName.class, DisplayName.class
-*Asegurate de tener al menos 3 métodos con orden definido.
-*Aunque no es buena práctica depender del orden, este ejercicio es útil 
-para comprender cómo configurarlo cuando sea necesario.
-*/
-
 @TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class AppTestCourse { 
+public class CourseTest { 
  
     private Course course;
 
@@ -113,18 +83,6 @@ public class AppTestCourse {
         assertEquals(title, course.getTitle());  //Verifica que el título se haya asignado correctamente.
     }
 
-    /* 
-    //TEST INDIVIDUAL
-    @Test
-    @DisplayName("Constructor crea correctamente un objeto Course")
-    void testCourseNotNull() {
-        assertNotNull(course);  //Verifica que el objeto se haya creado.
-        assertEquals("Intro a Java", course.getTitle());  //Verifica los valores del constructor.
-        assertEquals(8, course.getDuration());
-    }
-    */
-
-    //METHODSOURCE: prueba múltiples títulos y duraciones al mismo tiempo.
     static Stream<Arguments> courseDataProvider() {  //Provee datos para el test parametrizado.
         return Stream.of(  //Cada Arguments.of representa un conjunto de parámetros para el test.
             Arguments.of("Java Básico", 10),
@@ -143,9 +101,6 @@ public class AppTestCourse {
         assertEquals(duration, c.getDuration());  //Verifica que la duración se haya asignado correctamente.
     }
 
-
-
-    //TEST PARAMETRIZADO
     @Tag ("setTitle")
     @Order(4)
     @ParameterizedTest
