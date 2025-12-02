@@ -25,6 +25,13 @@
         <version>5.10.0</version>
         <scope>test</scope>
       </dependency>
+      
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-suite</artifactId>
+        <version>1.10.5</version>
+        <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>
@@ -84,6 +91,9 @@
                (we'll also rename the test classes to '*Test' so they are detected)
           -->
           <useModulePath>false</useModulePath>
+          <!-- Ejecutar únicamente tests con @Tag("setTitle") y excluir @Tag("constructor") -->
+          <groups>setTitle</groups>
+          <excludedGroups>constructor</excludedGroups>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
